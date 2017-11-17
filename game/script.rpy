@@ -1,3 +1,36 @@
+init python:
+    class Place(object):
+        def __init__(self, name, desc, neighbors=[]):
+            self.name= name
+            self.desc = desc
+            self.neighbors = neighbors
+            for n in self.neighbors:
+                n.addneighbor(self)
+
+        def addneighbor(self, neighbor):
+            self.neighbors.append(neighbor)
+
+    class Player(object):
+        def __init__(self, name, location):
+            self.name = name
+            self.location = location
+            
+        def move(self, location):
+            if location in self.location.neighbors:
+                self.location = location
+            else:
+                print ('That Place is to far away!')
+
+    Home = Place('Home','Place You Live')
+    Forest = Place('Forest','Place to Find Wood',[Home])
+    Mines = Place('Mines','Place You Get Ore',[Home,Forest])
+
+    pc= Player('bob', Home)
+
+
+
+
+
 image Home= im.Scale("forest.png", 1280, 720)
 
 define b = Character("Azule")
@@ -40,13 +73,17 @@ label start:
 
     pov "[player]"
 
-    g "Nice!..."
-
-    g ""
-
     g "cool..."
-    g "cool..."
-#498bf4
+
+
+label explore:
+    'You are in [pc.location.name]'
+    python:
+        choice = menu([(p.name, p) for p in pc.location.neighbors])
+        pc.move(choice)
+        
+    jump explore
+
 
 
     return
